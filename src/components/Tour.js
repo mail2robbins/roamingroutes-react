@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { setTour } from "../redux/tourSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const Tour = ({ image, date, title, info, location, duration, cost }) => {
   const navigate = useNavigate();

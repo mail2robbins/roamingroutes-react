@@ -14,7 +14,7 @@ const tourSlice = createSlice({
   initialState,
   reducers: {
     setTour: (store, action) => {
-      console.log("store", store, "action", action);
+      //console.log("store", store, "action", action);
       store.selectedTour.title = action.payload.title;
       store.selectedTour.location = action.payload.location;
       store.selectedTour.image = action.payload.image;

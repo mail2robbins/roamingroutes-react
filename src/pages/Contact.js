@@ -1,5 +1,5 @@
 // import React from "react";
-import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
 // import MailTo from "../components/MailTo";
 
 // const Contact = () => {
@@ -22,11 +22,12 @@ import { Link } from "react-router-dom";
 
 import { useState } from "react";
 import FormRow from "../components/FormRow";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Wrapper from "../assets/wrappers/ContactPage";
 import Logo from "../components/Logo";
+import SendEmail from "../libraries/SendEmail";
 
 const initialState = {
   name: "",
@@ -35,13 +36,12 @@ const initialState = {
 
 function Contact() {
   const [values, setValues] = useState(initialState);
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { title, location, image } = useSelector(
     (store) => store.tour.selectedTour
   );
-  console.log(title, location, image);
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
@@ -49,15 +49,33 @@ function Contact() {
     setValues({ ...values, [name]: value });
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     const { name, email } = values;
     if (!email || !name) {
       toast.error("Please Fill Out All Fields");
       return;
     }
-    window.location.href = `mailto:roaming.routes.tours@gmail.com?body=I am interested in the tour package '${title}' for location: ${location}.&subject=New Enquiry for the tour package - ${title}`;
-    toast.success(`Enquiry sent successfully for the tour package '${title}'`);
+    // window.location.href = `mailto:roaming.routes.tours@gmail.com?body=I am interested in the tour package '${title}' for location: ${location}.&subject=New Enquiry for the tour package - ${title}`;
+    // toast.success(`Enquiry sent successfully for the tour package '${title}'`);
+    const { status } = await SendEmail({
+      from_name: name,
+      message: `I am interested in the tour package '${title}' for location: ${location}.`,
+      reply_to: "roaming.routes.tours@gmail.com",
+      to_name: email,
+      to_address: email,
+      //subject: `New Enquiry for the tour package - ${title}`,
+    });
+    if (status === 1) {
+      toast.success(
+        `Enquiry sent successfully for the tour package '${title}'`
+      );
+    } else {
+      toast.error(
+        `An error occured while sending the enquiry on the tour package '${title}'`
+      );
+    }
+
     navigate("/");
   };
 
